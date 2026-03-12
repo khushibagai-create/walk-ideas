@@ -1114,6 +1114,106 @@
 
     /* Bottom safe area spacer */
     .safe-bottom { height: 24px; }
+
+    /* =================== Yoga→Walk value prop card =================== */
+    .yoga-walk-card {
+      margin: 16px 20px 0;
+      background: linear-gradient(135deg, #1e4d2b 0%, #2e7d3e 60%, #3aad5a 100%);
+      border-radius: 18px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .yoga-walk-card::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+    }
+    .yoga-walk-label {
+      font-size: 22px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .yoga-walk-headline {
+      font-family: 'Lora', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .yoga-walk-body {
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.55;
+    }
+
+    /* =================== Invite friend card =================== */
+    .invite-card {
+      margin: 14px 20px 0;
+      background: var(--warm-white);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .invite-card:active {
+      background: var(--forest-50);
+      border-color: var(--forest-300);
+    }
+    .invite-card-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .invite-icon {
+      font-size: 24px;
+    }
+    .invite-card-left div .invite-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: 'Lora', serif;
+    }
+    .invite-card-left div .invite-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .invite-arrow {
+      font-size: 16px;
+      color: var(--forest-400);
+    }
+
+    /* =================== Dev nav =================== */
+    .dev-nav {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(26,46,26,0.85);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: background 0.2s ease;
+    }
+    .dev-nav:hover { background: rgba(26,46,26,1); }
   </style>
 </head>
 <body>
@@ -1222,6 +1322,12 @@
 
       <div class="onboard-body">
 
+        <!-- "I already walk" banner -->
+        <div id="already-walk-banner" style="display:none; background:var(--forest-100); border:1.5px solid var(--forest-300); border-radius:14px; padding:14px 16px; margin-bottom:20px;">
+          <div style="font-size:14px; font-weight:700; color:var(--forest-800); font-family:'Lora',serif; margin-bottom:4px;">Level up your walk 🚀</div>
+          <div style="font-size:13px; color:var(--forest-700); line-height:1.5;">Track it, share it, build on it — your daily walk becomes part of something bigger.</div>
+        </div>
+
         <div class="onboard-section">
           <label><span class="emoji">🕐</span> When do you usually have lunch?</label>
           <div class="chip-row" id="lunch-chips">
@@ -1229,6 +1335,26 @@
             <div class="chip selected" onclick="selectChip(this,'lunch-chips')">1 PM</div>
             <div class="chip" onclick="selectChip(this,'lunch-chips')">2 PM</div>
             <div class="chip" onclick="selectChip(this,'lunch-chips')">3 PM</div>
+          </div>
+        </div>
+
+        <div class="onboard-section">
+          <label><span class="emoji">🚶</span> When will you walk?</label>
+          <div class="chip-row" id="cue-chips">
+            <div class="chip" onclick="selectCueChip(this,'cue-chips')">🧘 After yoga</div>
+            <div class="chip selected" onclick="selectCueChip(this,'cue-chips')">🍽️ After lunch</div>
+            <div class="chip" onclick="selectCueChip(this,'cue-chips')">💼 After work</div>
+            <div class="chip" onclick="selectCueChip(this,'cue-chips')">🏫 After school drop</div>
+            <div class="chip" onclick="selectCueChip(this,'cue-chips')">🌅 At sunset</div>
+            <div class="chip" onclick="selectCueChip(this,'cue-chips')">🔀 Flexible timing</div>
+          </div>
+        </div>
+
+        <div class="onboard-section">
+          <label><span class="emoji">🏃</span> Do you already walk daily?</label>
+          <div class="chip-row" id="already-chips">
+            <div class="chip" onclick="selectAlreadyChip(this, false)">🆕 Just starting</div>
+            <div class="chip" onclick="selectAlreadyChip(this, true)">✅ Already walk daily</div>
           </div>
         </div>
 
@@ -1295,6 +1421,13 @@
         </div>
       </div>
 
+      <!-- Yoga → Walk value prop card -->
+      <div class="yoga-walk-card">
+        <span class="yoga-walk-label">🧘→🚶</span>
+        <div class="yoga-walk-headline">"Yoga energises. Walking restores. Do both."</div>
+        <div class="yoga-walk-body">Complete your morning with a walk — the perfect complement to your yoga practice.</div>
+      </div>
+
       <!-- Community ring -->
       <div class="community-card">
         <div class="ring-wrap">
@@ -1318,7 +1451,7 @@
         <h3>Did you walk today?</h3>
         <p>Tuesday · Post-lunch walk · 1:00 PM</p>
         <div class="checkin-btns">
-          <button class="yes-btn" onclick="goToScreen(4)">
+          <button class="yes-btn" onclick="doCheckin()">
             ✅ Yes, I walked!
           </button>
           <button class="skip-btn" onclick="showSkipOverlay()">
@@ -1370,6 +1503,18 @@
           </div>
         </div>
         <span class="group-arrow">→</span>
+      </div>
+
+      <!-- Invite a friend card -->
+      <div class="invite-card" onclick="inviteFriend()">
+        <div class="invite-card-left">
+          <span class="invite-icon">💬</span>
+          <div>
+            <div class="invite-title">Invite a friend to your club</div>
+            <div class="invite-sub">Walk together — habits stick better with friends</div>
+          </div>
+        </div>
+        <span class="invite-arrow">→</span>
       </div>
 
       <div class="safe-bottom"></div>
@@ -1469,6 +1614,30 @@
 </div><!-- /phone-frame -->
 
 <script>
+  // ── Analytics Logger ─────────────────────────────────
+  function logEvent(eventName, properties = {}) {
+    const userData = JSON.parse(localStorage.getItem('walk_experiment') || '{}');
+    const log = JSON.parse(localStorage.getItem('walk_analytics_log') || '[]');
+    const event = {
+      event: eventName,
+      timestamp: new Date().toISOString(),
+      userId: userData.userId || 'direct',
+      experimentId: userData.experimentId !== undefined ? userData.experimentId : 0,
+      experimentName: 'Walking Club',
+      ...properties
+    };
+    log.push(event);
+    localStorage.setItem('walk_analytics_log', JSON.stringify(log));
+    console.log('[Walk Analytics]', eventName, properties);
+  }
+
+  const screenNames = {
+    1: 'club_discovery',
+    2: 'club_onboarding',
+    3: 'club_home',
+    4: 'post_walk_checkin'
+  };
+
   let currentScreen = 1;
 
   function goToScreen(n) {
@@ -1513,6 +1682,9 @@
 
     // Scroll to top
     next.scrollTop = 0;
+
+    // Fire analytics
+    logEvent('experiment_screen_viewed', { screen: screenNames[n] || 'screen_' + n });
   }
 
   function selectChip(el, groupId) {
@@ -1579,7 +1751,43 @@
   function hideOverlay(id) {
     document.getElementById(id).classList.remove('visible');
   }
+
+  function selectCueChip(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    logEvent('cue_selected', { cue: el.textContent.trim() });
+  }
+
+  function selectAlreadyChip(el, alreadyWalks) {
+    document.querySelectorAll('#already-chips .chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    const banner = document.getElementById('already-walk-banner');
+    if (alreadyWalks) {
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
+    }
+    logEvent('already_walks_selected', { alreadyWalks: alreadyWalks });
+  }
+
+  function doCheckin() {
+    logEvent('club_checkin', { clubName: 'Morning Walkers', walkType: 'outdoor' });
+    goToScreen(4);
+  }
+
+  function inviteFriend() {
+    logEvent('invite_tapped', { source: 'club_home' });
+    window.open('https://wa.me/?text=' + encodeURIComponent('I just joined a Walking Club on Habuild! Come join me 🚶‍♀️ https://habuild.in/walk'));
+  }
+
+  // Page load event
+  window.addEventListener('DOMContentLoaded', () => {
+    logEvent('experiment_screen_viewed', { screen: 'club_home' });
+  });
 </script>
+
+<!-- Dev nav -->
+<a class="dev-nav" href="walk-app.html">← Walk App</a>
 
 </body>
 </html>

@@ -357,6 +357,121 @@
     }
     .streak-badge .flame { font-size: 24px; }
 
+    /* Walkathon event card */
+    .walkathon-card {
+      background: linear-gradient(135deg, #F4871A 0%, #E05A0A 100%);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin: 0 20px 14px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .walkathon-card:active { transform: scale(0.98); }
+    .walkathon-card::before {
+      content: '';
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      top: -40px;
+      right: -30px;
+    }
+    .walkathon-date-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .walkathon-date-badge {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 3px 8px;
+    }
+    .walkathon-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: #fff;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .walkathon-loc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .walkathon-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+    .walkathon-registered {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+    }
+    .walkathon-cta {
+      background: #fff;
+      color: #E05A0A;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Smaller event chips */
+    .event-chips-row {
+      display: flex;
+      gap: 10px;
+      margin: 0 20px 16px;
+    }
+    .event-chip {
+      flex: 1;
+      background: var(--saffron-light);
+      border: 1.5px solid var(--saffron-mid);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .event-chip:active { transform: scale(0.97); }
+    .event-chip-city {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+    .event-chip-date {
+      font-size: 11px;
+      color: var(--text-mid);
+    }
+    .event-chip-loc {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
     /* HERO: 5/6 counter */
     .checkin-hero {
       margin: 0 20px;
@@ -483,6 +598,28 @@
       background: linear-gradient(135deg, #27AE60, #1a8a48);
       box-shadow: 0 4px 16px rgba(39,174,96,0.4);
     }
+
+    /* WhatsApp invite button */
+    .btn-whatsapp-invite {
+      width: 100%;
+      background: #25D366;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.35);
+      margin-bottom: 12px;
+    }
+    .btn-whatsapp-invite:active { transform: scale(0.97); }
 
     /* Stats row */
     .stats-row {
@@ -1248,6 +1385,29 @@
       background: var(--forest);
       color: #fff;
     }
+
+    /* Dev nav button */
+    .dev-nav-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 9999;
+      font-family: 'Nunito', sans-serif;
+    }
+    .dev-nav-btn:hover { background: rgba(255,255,255,0.25); }
   </style>
 </head>
 <body>
@@ -1312,6 +1472,11 @@
           <div class="option-desc">Have an invite code? Enter it here to join your group's walking journey.</div>
         </div>
 
+        <!-- WhatsApp invite CTA -->
+        <button class="btn-whatsapp-invite" onclick="handleWhatsAppInvite()">
+          💬 Invite friends to your group
+        </button>
+
         <div class="size-note">Groups of <span>3 to 8 people</span> work best for accountability</div>
 
       </div>
@@ -1350,6 +1515,34 @@
         <div class="streak-badge">
           <span class="flame">🔥</span>
           12 days together
+        </div>
+      </div>
+
+      <!-- Walkathon event card — Pune (pinned, prominent) -->
+      <div style="height: 14px;"></div>
+      <div class="walkathon-card" onclick="logEvent('walkathon_interest', { city: 'pune' }); showToast('Registering for Pune Walk Meetup! 📍')">
+        <div class="walkathon-date-row">
+          <div class="walkathon-date-badge">🗓️ March 22, 2026</div>
+        </div>
+        <div class="walkathon-title">Pune Walk Meetup</div>
+        <div class="walkathon-loc">📍 Aga Khan Palace, Pune</div>
+        <div class="walkathon-footer">
+          <div class="walkathon-registered">234 members registered</div>
+          <button class="walkathon-cta">Join the Meetup →</button>
+        </div>
+      </div>
+
+      <!-- Smaller event chips for other cities -->
+      <div class="event-chips-row">
+        <div class="event-chip" onclick="logEvent('walkathon_interest', { city: 'mumbai' }); showToast('Mumbai Walk — Mar 29! 🌊')">
+          <div class="event-chip-city">🌊 Mumbai</div>
+          <div class="event-chip-date">March 29</div>
+          <div class="event-chip-loc">Juhu Beach</div>
+        </div>
+        <div class="event-chip" onclick="logEvent('walkathon_interest', { city: 'bangalore' }); showToast('Namma Walk — Apr 5! 🌳')">
+          <div class="event-chip-city">🌳 Bangalore</div>
+          <div class="event-chip-date">April 5</div>
+          <div class="event-chip-loc">Cubbon Park</div>
         </div>
       </div>
 
@@ -1867,14 +2060,36 @@
   <button onclick="goToScreen(5)" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(10px);">5 Milestone</button>
 </div>
 
+<!-- Dev nav button -->
+<a href="walk-app.html" class="dev-nav-btn">← Walk App</a>
+
 <script>
-  // ── Screen navigation ──
+  /* ── Analytics Logger ── */
+  function logEvent(eventName, properties = {}) {
+    const userData = JSON.parse(localStorage.getItem('walk_experiment') || '{}');
+    const log = JSON.parse(localStorage.getItem('walk_analytics_log') || '[]');
+    const event = {
+      event: eventName,
+      timestamp: new Date().toISOString(),
+      userId: userData.userId || 'direct',
+      experimentId: userData.experimentId !== undefined ? userData.experimentId : 3,
+      experimentName: 'Friend Groups',
+      ...properties
+    };
+    log.push(event);
+    localStorage.setItem('walk_analytics_log', JSON.stringify(log));
+    console.log('[Walk Analytics]', eventName, properties);
+  }
+
+  /* ── Screen navigation ── */
   function goToScreen(n) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen' + n).classList.add('active');
+    const screenNames = { 1: 'create_join', 2: 'group_home', 3: 'checkin_flow', 4: 'group_league', 5: 'milestone' };
+    logEvent('experiment_screen_viewed', { screen: screenNames[n] || 'screen_' + n });
   }
 
-  // ── Toast ──
+  /* ── Toast ── */
   let toastTimer;
   function showToast(msg) {
     const toast = document.getElementById('toast');
@@ -1884,18 +2099,20 @@
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
   }
 
-  // ── Chip selection ──
+  /* ── Chip selection ── */
   function selectChip(el, group) {
     const parent = el.closest('.chip-row');
     parent.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
   }
 
-  // ── Check-in animation ──
+  /* ── Check-in animation ── */
   let hasCheckedIn = false;
   function handleCheckin() {
     if (hasCheckedIn) return;
     hasCheckedIn = true;
+
+    logEvent('group_checkin', { groupSize: 5, walkedCount: 4 });
 
     // Update pending avatar to done
     const pending = document.getElementById('pendingAvatar');
@@ -1926,7 +2143,13 @@
     setTimeout(() => goToScreen(3), 900);
   }
 
-  // ── Confetti ──
+  /* ── WhatsApp invite ── */
+  function handleWhatsAppInvite() {
+    logEvent('group_invite_sent', { method: 'whatsapp' });
+    window.open('https://wa.me/?text=' + encodeURIComponent('Hey! Join my walking group on Habuild 🚶‍♀️ We walk together and keep each other accountable. Come join! https://habuild.in/walk'));
+  }
+
+  /* ── Confetti ── */
   function fireConfetti() {
     const container = document.getElementById('confettiContainer');
     const colors = ['#F4871A','#27AE60','#F0B429','#2E6B45','#FF6B6B','#4ECDC4','#FFD199'];
@@ -1945,10 +2168,10 @@
     }
   }
 
-  // ── Animate week bars on screen 2 load ──
+  /* ── Animate week bars on screen 2 load ── */
   // (they use inline height styles, which render immediately via CSS)
 
-  // ── Milestone bar animations on screen 5 ──
+  /* ── Milestone bar animations on screen 5 ── */
   function animateMilestoneBars() {
     document.querySelectorAll('.mc-bar').forEach(bar => {
       const targetWidth = bar.style.width;
@@ -1968,6 +2191,9 @@
   document.querySelectorAll('.screen').forEach(s => {
     observer.observe(s, { attributes: true, attributeFilter: ['class'] });
   });
+
+  /* ── Fire page load event ── */
+  logEvent('experiment_screen_viewed', { screen: 'group_home' });
 </script>
 
 </body>

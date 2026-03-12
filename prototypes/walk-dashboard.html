@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Walk Experiment Dashboard — Habuild</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f5f5f5;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 32px 24px 64px;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left {}
+  .header-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .header-subtitle {
+    font-size: 14px;
+    color: #666;
+  }
+  .dev-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* ── Grid layout ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 700px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+  }
+  .card:last-child { margin-bottom: 0; }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #2d6a4f;
+    display: inline-block;
+  }
+
+  /* ── Assignment Info ── */
+  .assign-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 500px) { .assign-grid { grid-template-columns: 1fr; } }
+  .assign-item {}
+  .assign-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 4px;
+  }
+  .assign-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111;
+    word-break: break-all;
+  }
+  .assign-value.mono {
+    font-family: 'Menlo', 'Courier New', monospace;
+    font-size: 12px;
+    color: #444;
+  }
+
+  /* ── Experiment badge ── */
+  .exp-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .exp-a { background: #2d6a4f; }
+  .exp-b { background: #1565c0; }
+  .exp-c { background: #7b1fa2; }
+  .exp-d { background: #c62828; }
+  .exp-e { background: #e65100; }
+  .exp-unknown { background: #888; }
+
+  /* ── No-assignment state ── */
+  .no-assign {
+    text-align: center;
+    padding: 24px 0 8px;
+    color: #888;
+  }
+  .no-assign .no-assign-icon { font-size: 36px; margin-bottom: 10px; }
+  .no-assign p { margin-bottom: 16px; font-size: 14px; }
+  .btn-link {
+    display: inline-block;
+    background: #2d6a4f;
+    color: #fff;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-link:hover { background: #245740; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 500px) { .stats-row { grid-template-columns: 1fr; } }
+  .stat-box {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d6a4f;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: #888;
+  }
+
+  /* ── Retention table ── */
+  .milestone-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .milestone-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 0 12px 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .milestone-table td {
+    padding: 10px 12px 10px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #f7f7f7;
+    vertical-align: middle;
+  }
+  .milestone-table tr:last-child td { border-bottom: none; }
+  .status-reached {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: #2d6a4f; font-weight: 500;
+  }
+  .status-pending {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: #aaa;
+  }
+
+  /* ── Events table ── */
+  .events-wrap {
+    overflow-x: auto;
+    max-height: 320px;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+  }
+  .events-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+  .events-table th {
+    position: sticky;
+    top: 0;
+    background: #f8f9fa;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+    z-index: 1;
+  }
+  .events-table td {
+    padding: 9px 14px;
+    font-size: 12px;
+    color: #444;
+    border-bottom: 1px solid #f7f7f7;
+    vertical-align: top;
+  }
+  .events-table tr:last-child td { border-bottom: none; }
+  .events-table tr:hover td { background: #fafafa; }
+  .event-name {
+    font-family: 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+    background: #f0f4f8;
+    color: #1565c0;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .event-props {
+    font-family: 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+    color: #888;
+    word-break: break-all;
+  }
+  .events-empty {
+    text-align: center;
+    padding: 32px;
+    color: #bbb;
+    font-size: 13px;
+  }
+  .row-num {
+    color: #ccc;
+    font-size: 11px;
+    font-family: monospace;
+  }
+
+  /* ── Cohort table ── */
+  .cohort-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .cohort-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 8px 14px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+  }
+  .cohort-table td {
+    padding: 11px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+  }
+  .cohort-table tr:last-child td { border-bottom: none; }
+  .cohort-name {
+    font-weight: 600;
+    color: #111;
+    white-space: nowrap;
+  }
+  .cohort-assigned {
+    color: #888;
+    font-size: 13px;
+  }
+  .pct-cell {
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 6px;
+    padding: 5px 10px !important;
+    text-align: center;
+  }
+  /* color scale handled in JS */
+
+  /* ── Actions ── */
+  .actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-danger { background: #fdecea; color: #c62828; }
+  .btn-export { background: #e8f5e9; color: #2d6a4f; }
+  .btn-primary { background: #2d6a4f; color: #fff; }
+  .btn-secondary { background: #f0f0f0; color: #444; }
+
+  /* ── Divider ── */
+  .section-gap { margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-title">Walk Experiment Dashboard</div>
+      <div class="header-subtitle">Research &amp; analytics view — Habuild Walk Feature</div>
+    </div>
+    <div class="dev-badge">🔬 Dev Tool</div>
+  </div>
+
+  <!-- Section 1: Device Assignment -->
+  <div class="card section-gap" id="assignment-card">
+    <div class="card-title"><span class="dot"></span>Current Device Assignment</div>
+    <div id="assignment-body"></div>
+  </div>
+
+  <!-- Section 2 & 3 in 2-col grid -->
+  <div class="grid-2">
+    <!-- Section 2: Session Stats -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="dot"></span>Session Stats</div>
+      <div id="session-stats-body"></div>
+    </div>
+
+    <!-- Section 3: Retention Milestones -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="dot"></span>Retention Milestones</div>
+      <div id="milestones-body"></div>
+    </div>
+  </div>
+  <div style="margin-bottom:20px"></div>
+
+  <!-- Section 4: All Analytics Events -->
+  <div class="card section-gap">
+    <div class="card-title"><span class="dot"></span>All Analytics Events <span id="event-count-badge" style="margin-left:6px;font-size:12px;font-weight:500;color:#888;text-transform:none;letter-spacing:0"></span></div>
+    <div id="events-body"></div>
+  </div>
+
+  <!-- Section 5: Simulated Cohort -->
+  <div class="card section-gap">
+    <div class="card-title"><span class="dot"></span>Simulated Cohort Table <span style="margin-left:6px;font-size:11px;font-weight:400;color:#bbb;text-transform:none;letter-spacing:0">(demo data — for presentations)</span></div>
+    <div style="overflow-x:auto">
+      <table class="cohort-table" id="cohort-table"></table>
+    </div>
+  </div>
+
+  <!-- Section 6: Actions -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>Actions</div>
+    <div class="actions-row">
+      <button class="btn btn-danger" onclick="resetAll()">🗑 Reset &amp; Re-assign</button>
+      <button class="btn btn-export" onclick="exportEvents()">⬇ Export Events (JSON)</button>
+      <a class="btn btn-primary" href="walk-app.html">🚶 Go to Walk App</a>
+      <a class="btn btn-secondary" id="btn-current-exp" href="walk-app.html">🔗 Go to Current Experiment</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── Experiment metadata ───────────────────────────────────────────────
+const EXPERIMENTS = {
+  'walk-clubs':     { letter: 'A', name: 'Walking Club',      badgeClass: 'exp-a', file: 'walk-clubs.html' },
+  'walk-habit-loop':{ letter: 'B', name: 'Habit Loop',        badgeClass: 'exp-b', file: 'walk-habit-loop.html' },
+  'walk-partners':  { letter: 'C', name: 'Walk Partners',     badgeClass: 'exp-c', file: 'walk-partners.html' },
+  'walk-groups':    { letter: 'D', name: 'Friend Groups',     badgeClass: 'exp-d', file: 'walk-groups.html' },
+  'walk-milestones':{ letter: 'E', name: 'Milestone Cards',   badgeClass: 'exp-e', file: 'walk-milestones.html' },
+};
+
+const MILESTONES = [
+  { key: 'retention_d1_logged',  label: 'Day 1',  days: 1  },
+  { key: 'retention_d3_logged',  label: 'Day 3',  days: 3  },
+  { key: 'retention_d7_logged',  label: 'Day 7',  days: 7  },
+  { key: 'retention_d14_logged', label: 'Day 14', days: 14 },
+  { key: 'retention_d21_logged', label: 'Day 21', days: 21 },
+  { key: 'retention_d30_logged', label: 'Day 30', days: 30 },
+];
+
+const COHORT_DATA = [
+  { exp: 'Experiment A',  name: 'Walking Club',     badgeClass: 'exp-a', assigned: 200, d1: 68, d3: 52, d7: 41 },
+  { exp: 'Experiment B',  name: 'Habit Loop',        badgeClass: 'exp-b', assigned: 200, d1: 71, d3: 55, d7: 44 },
+  { exp: 'Experiment C',  name: 'Walk Partners',     badgeClass: 'exp-c', assigned: 200, d1: 65, d3: 49, d7: 38 },
+  { exp: 'Experiment D',  name: 'Friend Groups',     badgeClass: 'exp-d', assigned: 200, d1: 73, d3: 58, d7: 47 },
+  { exp: 'Experiment E',  name: 'Milestone Cards',   badgeClass: 'exp-e', assigned: 200, d1: 69, d3: 53, d7: 43 },
+];
+
+// ─── Helpers ──────────────────────────────────────────────────────────
+function fmtDate(ts) {
+  if (!ts) return '—';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleString('en-IN', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: true
+    });
+  } catch(e) { return ts; }
+}
+
+function daysSince(ts) {
+  if (!ts) return '—';
+  const ms = Date.now() - new Date(ts).getTime();
+  const d = Math.floor(ms / 86400000);
+  if (d === 0) return 'Today';
+  if (d === 1) return '1 day ago';
+  return d + ' days ago';
+}
+
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length > n ? str.slice(0, n) + '…' : str;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// Color scale for retention %: 38 = reddest, 73 = greenest
+function pctColor(pct) {
+  const lo = 35, hi = 75;
+  const t = Math.max(0, Math.min(1, (pct - lo) / (hi - lo)));
+  // interpolate: red #fdecea → white → green #e8f5e9
+  if (t < 0.5) {
+    const u = t * 2;
+    const r = Math.round(253 + (255 - 253) * u);
+    const g = Math.round(46  + (255 - 46)  * u);
+    const b = Math.round(40  + (255 - 40)  * u);
+    return { bg: `rgb(${r},${g},${b})`, color: t < 0.25 ? '#c62828' : '#555' };
+  } else {
+    const u = (t - 0.5) * 2;
+    const r = Math.round(255 + (232 - 255) * u);
+    const g = Math.round(255 + (245 - 255) * u);
+    const b = Math.round(255 + (233 - 255) * u);
+    return { bg: `rgb(${r},${g},${b})`, color: '#2d6a4f' };
+  }
+}
+
+// ─── Main render ──────────────────────────────────────────────────────
+window.onload = function() {
+  const data = JSON.parse(localStorage.getItem('walk_experiment') || 'null');
+  const log  = JSON.parse(localStorage.getItem('walk_analytics_log') || '[]');
+
+  renderAssignment(data);
+  renderSessionStats(log);
+  renderMilestones(data);
+  renderEvents(log);
+  renderCohort();
+  updateCurrentExpBtn(data);
+};
+
+// Section 1
+function renderAssignment(data) {
+  const el = document.getElementById('assignment-body');
+  if (!data) {
+    el.innerHTML = `
+      <div class="no-assign">
+        <div class="no-assign-icon">📭</div>
+        <p>No experiment assignment found for this device.</p>
+        <a class="btn-link" href="walk-app.html">Open Walk App to get assigned →</a>
+      </div>`;
+    return;
+  }
+  const exp = EXPERIMENTS[data.experimentId] || null;
+  const badgeClass = exp ? exp.badgeClass : 'exp-unknown';
+  const expLabel = exp ? `Experiment ${exp.letter}: ${exp.name}` : (data.experimentId || 'Unknown');
+  const prefs = data.onboardingAnswers || {};
+
+  el.innerHTML = `
+    <div class="assign-grid">
+      <div class="assign-item">
+        <div class="assign-label">User ID</div>
+        <div class="assign-value mono">${esc(data.userId || '—')}</div>
+      </div>
+      <div class="assign-item">
+        <div class="assign-label">Experiment Assigned</div>
+        <div class="assign-value">
+          <span class="exp-badge ${esc(badgeClass)}">${esc(expLabel)}</span>
+        </div>
+      </div>
+      <div class="assign-item">
+        <div class="assign-label">Assigned At</div>
+        <div class="assign-value">${fmtDate(data.assignedAt)}</div>
+      </div>
+      <div class="assign-item">
+        <div class="assign-label">Days Since Assignment</div>
+        <div class="assign-value">${daysSince(data.assignedAt)}</div>
+      </div>
+      <div class="assign-item">
+        <div class="assign-label">Walk Frequency</div>
+        <div class="assign-value">${esc(prefs.walkFrequency || '—')}</div>
+      </div>
+      <div class="assign-item">
+        <div class="assign-label">Preferred Time</div>
+        <div class="assign-value">${esc(prefs.preferredTime || '—')}</div>
+      </div>
+    </div>`;
+}
+
+// Section 2
+function renderSessionStats(log) {
+  const el = document.getElementById('session-stats-body');
+  const opens = log.filter(e => e.event === 'app_opened').length;
+  const screens = new Set(log.filter(e => e.properties && e.properties.screen).map(e => e.properties.screen)).size;
+  const lastEvent = log.length > 0 ? log[log.length - 1] : null;
+  const lastTs = lastEvent ? (lastEvent.timestamp || lastEvent.ts || null) : null;
+
+  el.innerHTML = `
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num">${opens}</div>
+        <div class="stat-label">Total app opens</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">${screens || log.length > 0 ? screens : 0}</div>
+        <div class="stat-label">Unique screens viewed</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" style="font-size:14px;padding-top:4px">${lastTs ? fmtDate(lastTs) : '—'}</div>
+        <div class="stat-label">Last active</div>
+      </div>
+    </div>`;
+}
+
+// Section 3
+function renderMilestones(data) {
+  const el = document.getElementById('milestones-body');
+  const assignedAt = data ? new Date(data.assignedAt) : null;
+
+  let rows = MILESTONES.map(m => {
+    const reached = localStorage.getItem(m.key);
+    let statusHtml, dateHtml;
+    if (reached) {
+      statusHtml = `<span class="status-reached">✅ Reached</span>`;
+      dateHtml = fmtDate(reached === 'true' ? (assignedAt ? new Date(assignedAt.getTime() + m.days * 86400000).toISOString() : null) : reached);
+    } else if (!assignedAt) {
+      statusHtml = `<span class="status-pending">— Not started</span>`;
+      dateHtml = '—';
+    } else {
+      const targetDate = new Date(assignedAt.getTime() + m.days * 86400000);
+      const now = new Date();
+      if (targetDate <= now) {
+        statusHtml = `<span class="status-pending">❌ Missed</span>`;
+      } else {
+        statusHtml = `<span class="status-pending">⏳ Pending</span>`;
+      }
+      dateHtml = '—';
+    }
+    return `<tr>
+      <td style="font-weight:500">${esc(m.label)}</td>
+      <td>${statusHtml}</td>
+      <td style="color:#888;font-size:12px">${dateHtml}</td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <table class="milestone-table">
+      <thead><tr>
+        <th>Milestone</th>
+        <th>Status</th>
+        <th>Date Reached</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// Section 4
+function renderEvents(log) {
+  const el = document.getElementById('events-body');
+  const badge = document.getElementById('event-count-badge');
+  badge.textContent = log.length > 0 ? `(${log.length} event${log.length !== 1 ? 's' : ''})` : '';
+
+  if (log.length === 0) {
+    el.innerHTML = `<div class="events-empty">No events logged yet. Open the Walk App to start tracking.</div>`;
+    return;
+  }
+
+  // Most recent first, cap at 100
+  const events = [...log].reverse().slice(0, 100);
+
+  const rows = events.map((e, i) => {
+    const ts = e.timestamp || e.ts || '';
+    const props = e.properties || e.props || {};
+    const propsStr = truncate(JSON.stringify(props), 60);
+    return `<tr>
+      <td class="row-num">${log.length - i}</td>
+      <td><span class="event-name">${esc(e.event || e.name || '—')}</span></td>
+      <td style="white-space:nowrap;color:#888">${ts ? fmtDate(ts) : '—'}</td>
+      <td><span class="event-props">${esc(propsStr)}</span></td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="events-wrap">
+      <table class="events-table">
+        <thead><tr>
+          <th style="width:36px">#</th>
+          <th>Event</th>
+          <th>Timestamp</th>
+          <th>Properties</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+// Section 5
+function renderCohort() {
+  const table = document.getElementById('cohort-table');
+  const allPcts = COHORT_DATA.flatMap(r => [r.d1, r.d3, r.d7]);
+
+  let thead = `<thead><tr>
+    <th>Experiment</th>
+    <th>Assigned</th>
+    <th style="text-align:center">D1 Return</th>
+    <th style="text-align:center">D3 Return</th>
+    <th style="text-align:center">D7 Return</th>
+  </tr></thead>`;
+
+  let tbody = COHORT_DATA.map(r => {
+    const c1 = pctColor(r.d1);
+    const c3 = pctColor(r.d3);
+    const c7 = pctColor(r.d7);
+    return `<tr>
+      <td>
+        <span class="exp-badge ${esc(r.badgeClass)}" style="margin-right:8px">${esc(r.exp)}</span>
+        <span class="cohort-name" style="font-size:13px">${esc(r.name)}</span>
+      </td>
+      <td class="cohort-assigned">${r.assigned}</td>
+      <td class="pct-cell" style="background:${c1.bg};color:${c1.color}">${r.d1}%</td>
+      <td class="pct-cell" style="background:${c3.bg};color:${c3.color}">${r.d3}%</td>
+      <td class="pct-cell" style="background:${c7.bg};color:${c7.color}">${r.d7}%</td>
+    </tr>`;
+  }).join('');
+
+  table.innerHTML = thead + `<tbody>${tbody}</tbody>`;
+}
+
+// Update "Go to Current Experiment" button
+function updateCurrentExpBtn(data) {
+  const btn = document.getElementById('btn-current-exp');
+  if (data && data.experimentId) {
+    const exp = EXPERIMENTS[data.experimentId];
+    if (exp) {
+      btn.href = exp.file;
+      btn.textContent = `🔗 Go to Experiment ${exp.letter}: ${exp.name}`;
+    }
+  }
+}
+
+// ─── Actions ──────────────────────────────────────────────────────────
+function resetAll() {
+  if (!confirm('Reset all experiment data for this device? This cannot be undone.')) return;
+  localStorage.removeItem('walk_experiment');
+  localStorage.removeItem('walk_analytics_log');
+  MILESTONES.forEach(m => localStorage.removeItem(m.key));
+  location.reload();
+}
+
+function exportEvents() {
+  const log = JSON.parse(localStorage.getItem('walk_analytics_log') || '[]');
+  const json = JSON.stringify(log, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `walk_events_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

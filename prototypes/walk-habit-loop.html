@@ -990,6 +990,69 @@
         overflow: hidden;
       }
     }
+
+    /* ─── Indoor walk tip ─── */
+    .indoor-tip {
+      display: none;
+      background: var(--sage-50);
+      border: 1.5px solid var(--sage-200);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: 13.5px;
+      color: var(--sage-700);
+      line-height: 1.5;
+    }
+    .indoor-tip strong { color: var(--sage-600); }
+
+    /* ─── Invite friend CTA on screen 5 ─── */
+    .invite-friend-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
+    }
+    .invite-friend-btn:hover {
+      background: #1db954;
+      transform: translateY(-1px);
+    }
+    .invite-friend-btn:active { transform: translateY(0); }
+
+    /* ─── Dev nav ─── */
+    .dev-nav {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(45,82,45,0.85);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: background 0.2s ease;
+    }
+    .dev-nav:hover { background: rgba(45,82,45,1); }
   </style>
 </head>
 <body>
@@ -1019,12 +1082,18 @@
       </div>
 
       <div class="question-block">
-        <div class="question-label">After which meal will you walk?</div>
+        <div class="question-label">When will you walk?</div>
         <div class="chips-row" id="meal-chips">
-          <div class="chip" data-group="meal" data-value="breakfast" onclick="selectChip(this)">🌅 Breakfast</div>
-          <div class="chip" data-group="meal" data-value="lunch" onclick="selectChip(this)">☀️ Lunch</div>
-          <div class="chip" data-group="meal" data-value="dinner" onclick="selectChip(this)">🌙 Dinner</div>
-          <div class="chip" data-group="meal" data-value="all meals" onclick="selectChip(this)">✨ All meals</div>
+          <div class="chip" data-group="meal" data-value="after yoga" onclick="selectChip(this)">🧘 After yoga</div>
+          <div class="chip" data-group="meal" data-value="after lunch" onclick="selectChip(this)">🍽️ After lunch</div>
+          <div class="chip" data-group="meal" data-value="after work" onclick="selectChip(this)">💼 After work</div>
+          <div class="chip" data-group="meal" data-value="after school drop" onclick="selectChip(this)">🏫 After school drop</div>
+          <div class="chip" data-group="meal" data-value="at sunset" onclick="selectChip(this)">🌅 At sunset</div>
+          <div class="chip" data-group="meal" data-value="indoor walk" onclick="selectIndoorChip(this)">🏠 Indoor walk</div>
+          <div class="chip" data-group="meal" data-value="flexible" onclick="selectChip(this)">🔀 Flexible</div>
+        </div>
+        <div class="indoor-tip" id="indoor-tip">
+          <strong>Great!</strong> Walk at home — 15 minutes around your home counts as a full walk.
         </div>
       </div>
 
@@ -1051,7 +1120,7 @@
       <div class="plan-preview">
         <div class="plan-preview-label">Your intention</div>
         <div class="plan-preview-text" id="plan-preview-text">
-          "After <span class="plan-blank" id="prev-meal">lunch</span>, I will walk <span class="plan-blank" id="prev-duration">15 mins</span> <span class="plan-blank" id="prev-place">near home</span>."
+          "<span class="plan-blank" id="prev-meal">After lunch</span>, I will walk <span class="plan-blank" id="prev-duration">15 mins</span> <span class="plan-blank" id="prev-place">near home</span>."
         </div>
       </div>
 
@@ -1327,6 +1396,7 @@
     </div>
 
     <div class="s5-continue-btn">
+      <button class="invite-friend-btn" onclick="inviteFriend()">Share your streak with a friend 💬</button>
       <button class="cta-btn" onclick="goTo(1)" style="background: var(--sage-600);">Start again →</button>
     </div>
 
@@ -1361,9 +1431,34 @@
 "></div>
 
 <script>
+  // ── Analytics Logger ─────────────────────────────────
+  function logEvent(eventName, properties = {}) {
+    const userData = JSON.parse(localStorage.getItem('walk_experiment') || '{}');
+    const log = JSON.parse(localStorage.getItem('walk_analytics_log') || '[]');
+    const event = {
+      event: eventName,
+      timestamp: new Date().toISOString(),
+      userId: userData.userId || 'direct',
+      experimentId: userData.experimentId !== undefined ? userData.experimentId : 1,
+      experimentName: 'Habit Loop',
+      ...properties
+    };
+    log.push(event);
+    localStorage.setItem('walk_analytics_log', JSON.stringify(log));
+    console.log('[Walk Analytics]', eventName, properties);
+  }
+
+  const screenNames = {
+    1: 'habit_loop_home',
+    2: 'habit_loop_notification',
+    3: 'habit_loop_during_walk',
+    4: 'habit_loop_close_loop',
+    5: 'habit_loop_shared'
+  };
+
   // ── State ──────────────────────────────────────────
   const state = {
-    meal: 'lunch',
+    meal: 'after lunch',
     duration: '15 mins',
     place: 'near home',
     mood: null,
@@ -1386,12 +1481,23 @@
     next.classList.add('active');
     next.scrollTop = 0;
 
+    logEvent('experiment_screen_viewed', { screen: screenNames[n] || 'screen_' + n });
+
     if (n === 3) startTimer();
-    if (n === 5) buildShareCard();
+    if (n === 5) {
+      buildShareCard();
+      // Fire loop_completed when reaching share screen
+      const freetext = document.getElementById('freetext');
+      const reflectionLen = freetext ? freetext.value.length : 0;
+      logEvent('loop_completed', { cue: state.meal, reflection: reflectionLen });
+    }
   }
 
   // ── Chip selection (single-select per group) ────────
   function selectChip(el) {
+    // Hide indoor tip when a non-indoor cue is selected
+    const tipEl = document.getElementById('indoor-tip');
+    if (tipEl) tipEl.style.display = 'none';
     const group = el.dataset.group;
     document.querySelectorAll(`[data-group="${group}"]`).forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
@@ -1401,7 +1507,11 @@
   }
 
   function updatePlanPreview() {
-    document.getElementById('prev-meal').textContent     = state.meal;
+    // Format meal/cue for the sentence
+    const cueLabel = state.meal.startsWith('after') || state.meal.startsWith('After') || state.meal === 'at sunset' || state.meal === 'At sunset'
+      ? state.meal.charAt(0).toUpperCase() + state.meal.slice(1)
+      : state.meal;
+    document.getElementById('prev-meal').textContent     = cueLabel;
     document.getElementById('prev-duration').textContent = state.duration;
     document.getElementById('prev-place').textContent    = state.place;
 
@@ -1531,17 +1641,41 @@
     }, 2500);
   }
 
+  // ── Indoor walk chip ─────────────────────────────────
+  function selectIndoorChip(el) {
+    // Deselect all meal/cue chips then select this one
+    document.querySelectorAll('[data-group="meal"]').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.meal = el.dataset.value;
+    // Show indoor tip
+    document.getElementById('indoor-tip').style.display = 'block';
+    updatePlanPreview();
+    updateNotifText();
+  }
+
+  // ── Invite friend ─────────────────────────────────────
+  function inviteFriend() {
+    logEvent('invite_tapped', { source: 'loop_completion' });
+    window.open('https://wa.me/?text=' + encodeURIComponent("I've been walking daily with Habuild! Join me 🚶 https://habuild.in/walk"));
+  }
+
   // ── Init: pre-select defaults ────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
-    const lunchChip = document.querySelector('[data-value="lunch"]');
-    const dur15     = document.querySelector('[data-value="15 mins"]');
-    const nearHome  = document.querySelector('[data-value="near home"]');
-    if (lunchChip) lunchChip.classList.add('selected');
-    if (dur15)     dur15.classList.add('selected');
-    if (nearHome)  nearHome.classList.add('selected');
+    const afterLunch = document.querySelector('[data-value="after lunch"]');
+    const dur15      = document.querySelector('[data-value="15 mins"]');
+    const nearHome   = document.querySelector('[data-value="near home"]');
+    if (afterLunch) afterLunch.classList.add('selected');
+    if (dur15)      dur15.classList.add('selected');
+    if (nearHome)   nearHome.classList.add('selected');
     updatePlanPreview();
+
+    // Page load analytics
+    logEvent('experiment_screen_viewed', { screen: 'habit_loop_home' });
   });
 </script>
+
+<!-- Dev nav -->
+<a class="dev-nav" href="walk-app.html">← Walk App</a>
 
 </body>
 </html>

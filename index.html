@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Habuild Walk Feature — Prototypes</title>
+<title>Habuild Walk — Experiment Framework</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -11,10 +11,12 @@
     background: #f7f4ee;
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
-    padding: 60px 24px;
+    padding: 60px 24px 72px;
   }
   .container { max-width: 720px; margin: 0 auto; }
-  .header { margin-bottom: 56px; }
+
+  /* ── Header ── */
+  .header { margin-bottom: 40px; }
   .tag {
     display: inline-block;
     background: #2d6a4f;
@@ -35,16 +37,72 @@
     margin-bottom: 12px;
   }
   .subtitle {
-    font-size: 16px;
+    font-size: 15px;
     color: #666;
-    line-height: 1.6;
-    max-width: 500px;
+    line-height: 1.65;
+    max-width: 560px;
   }
-  .cards { display: flex; flex-direction: column; gap: 16px; }
+
+  /* ── Featured / Start Here card ── */
+  .card-featured {
+    background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+    border-radius: 20px;
+    padding: 32px 36px;
+    margin-bottom: 28px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .featured-left {}
+  .featured-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 8px;
+  }
+  .featured-title {
+    font-family: 'Lora', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+  .featured-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.5;
+    max-width: 380px;
+  }
+  .btn-featured {
+    display: inline-block;
+    background: #fff;
+    color: #2d6a4f;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .btn-featured:hover {
+    background: #f0f7f4;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  }
+
+  /* ── Experiment cards ── */
+  .cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
   .card {
     background: #fff;
     border-radius: 16px;
-    padding: 28px 32px;
+    padding: 24px 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -58,13 +116,13 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(45,106,79,0.10);
   }
-  .card-left { display: flex; align-items: center; gap: 20px; }
+  .card-left { display: flex; align-items: center; gap: 18px; }
   .card-icon {
-    width: 52px; height: 52px;
+    width: 50px; height: 50px;
     background: #f0f7f4;
     border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
+    font-size: 22px;
     flex-shrink: 0;
   }
   .card-num {
@@ -73,17 +131,24 @@
     color: #2d6a4f;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
   .card-title {
     font-family: 'Lora', serif;
-    font-size: 18px;
+    font-size: 17px;
     color: #1a1a1a;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
   .card-desc {
-    font-size: 13px;
+    font-size: 12px;
     color: #888;
+    line-height: 1.45;
+  }
+  .card-hypothesis {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 4px;
+    font-style: italic;
     line-height: 1.4;
   }
   .arrow {
@@ -92,8 +157,51 @@
     flex-shrink: 0;
     margin-left: 16px;
   }
+
+  /* ── Dashboard card ── */
+  .card-dashboard {
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    border: 1.5px dashed #d0cfc8;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+  .card-dashboard:hover {
+    border-color: #2d6a4f;
+    border-style: solid;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(45,106,79,0.08);
+  }
+  .dashboard-left { display: flex; align-items: center; gap: 16px; }
+  .dashboard-icon {
+    width: 44px; height: 44px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .dashboard-title {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+  .dashboard-desc {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.4;
+  }
+
+  /* ── Footer ── */
   .footer {
-    margin-top: 56px;
+    margin-top: 48px;
     padding-top: 24px;
     border-top: 1px solid #e8e3d8;
     font-size: 13px;
@@ -103,69 +211,105 @@
 </head>
 <body>
 <div class="container">
+
+  <!-- Header -->
   <div class="header">
     <div class="tag">Habuild — Walk Feature</div>
-    <h1>5 Product Ideas</h1>
-    <p class="subtitle">Interactive prototypes for the Walk feature. Each idea is a different approach to building the post-meal walk habit for Habuild members.</p>
+    <h1>Walk Experiment Framework</h1>
+    <p class="subtitle">5 experiments. 1000 users. One winner. Each concept is being tested with 200 members to find which mechanic drives the highest Day 7 &amp; Day 30 retention.</p>
   </div>
+
+  <!-- Featured: Start Here -->
+  <div class="card-featured">
+    <div class="featured-left">
+      <div class="featured-eyebrow">🚀 Start Here</div>
+      <div class="featured-title">Walk App — Shared Onboarding</div>
+      <div class="featured-sub">The entry point that assigns users to one of 5 experiments. Opens onboarding, assigns experiment, tracks retention.</div>
+    </div>
+    <a class="btn-featured" href="prototypes/walk-app.html">Open Walk App →</a>
+  </div>
+
+  <!-- 5 Experiment Cards -->
   <div class="cards">
     <a class="card" href="prototypes/walk-clubs.html">
       <div class="card-left">
         <div class="card-icon">🌿</div>
         <div>
-          <div class="card-num">Idea 1</div>
-          <div class="card-title">Clubs by Habuild</div>
-          <div class="card-desc">Walking Club — a permanent identity home for the habit</div>
+          <div class="card-num">Experiment A</div>
+          <div class="card-title">Walking Club</div>
+          <div class="card-desc">Permanent identity home — a club that outlasts the 21-Day Challenge</div>
+          <div class="card-hypothesis">Hypothesis: Permanent identity home solves Day 22 drop-off</div>
         </div>
       </div>
       <div class="arrow">→</div>
     </a>
+
     <a class="card" href="prototypes/walk-habit-loop.html">
       <div class="card-left">
         <div class="card-icon">🔄</div>
         <div>
-          <div class="card-num">Idea 2</div>
-          <div class="card-title">Habit Formation Loop</div>
-          <div class="card-desc">Intention → reminder → walk → close the loop</div>
+          <div class="card-num">Experiment B</div>
+          <div class="card-title">Habit Loop</div>
+          <div class="card-desc">Intention → reminder → walk → close the loop ("what did you notice?")</div>
+          <div class="card-hypothesis">Hypothesis: Intention + reflection creates the strongest habit loop</div>
         </div>
       </div>
       <div class="arrow">→</div>
     </a>
+
     <a class="card" href="prototypes/walk-partners.html">
       <div class="card-left">
         <div class="card-icon">🤝</div>
         <div>
-          <div class="card-num">Idea 3</div>
+          <div class="card-num">Experiment C</div>
           <div class="card-title">Walk Partners</div>
-          <div class="card-desc">Your score is based on whether your partner walks</div>
+          <div class="card-desc">Your score is based on whether your partner walked</div>
+          <div class="card-hypothesis">Hypothesis: Social obligation (partner's score = your walk) drives highest consistency</div>
         </div>
       </div>
       <div class="arrow">→</div>
     </a>
+
     <a class="card" href="prototypes/walk-groups.html">
       <div class="card-left">
         <div class="card-icon">👥</div>
         <div>
-          <div class="card-num">Idea 4</div>
-          <div class="card-title">Group Accountability</div>
-          <div class="card-desc">Friends together — 5/6 walked today</div>
+          <div class="card-num">Experiment D</div>
+          <div class="card-title">Friend Groups</div>
+          <div class="card-desc">Friends together — 5/6 walked today. Cooperative within, competitive between groups</div>
+          <div class="card-hypothesis">Hypothesis: Group accountability (5/6 today) is more motivating than individual</div>
         </div>
       </div>
       <div class="arrow">→</div>
     </a>
+
     <a class="card" href="prototypes/walk-milestones.html">
       <div class="card-left">
         <div class="card-icon">🏆</div>
         <div>
-          <div class="card-num">Idea 5</div>
-          <div class="card-title">Milestone Sharing</div>
-          <div class="card-desc">Strava-style shareable achievement cards</div>
+          <div class="card-num">Experiment E</div>
+          <div class="card-title">Milestone Cards</div>
+          <div class="card-desc">Strava-style shareable achievement cards — habit consistency + community belonging</div>
+          <div class="card-hypothesis">Hypothesis: Shareable achievements drive both retention and viral referrals</div>
         </div>
       </div>
       <div class="arrow">→</div>
     </a>
   </div>
-  <div class="footer">Habuild Walk Feature · March 2026 · Product</div>
+
+  <!-- Dashboard card -->
+  <a class="card-dashboard" href="prototypes/walk-dashboard.html">
+    <div class="dashboard-left">
+      <div class="dashboard-icon">📊</div>
+      <div>
+        <div class="dashboard-title">Experiment Dashboard</div>
+        <div class="dashboard-desc">View analytics, retention milestones, and event logs for this device.</div>
+      </div>
+    </div>
+    <div class="arrow" style="color:#aaa">→</div>
+  </a>
+
+  <div class="footer">Habuild Walk — Experiment Framework · March 2026 · Product</div>
 </div>
 </body>
 </html>

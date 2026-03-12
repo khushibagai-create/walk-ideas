@@ -46,6 +46,22 @@
     padding: 32px 16px 60px;
   }
 
+  /* ── Back to index link ── */
+  .back-to-index {
+    align-self: flex-start;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0.75;
+    transition: opacity 0.18s;
+  }
+  .back-to-index:hover { opacity: 1; color: var(--text-dark); }
+
   /* ── Navigation Dots ── */
   .nav-dots {
     display: flex;
@@ -132,7 +148,7 @@
   .screen::-webkit-scrollbar { display: none; }
   .screen.active { display: flex; }
 
-  /* ── Screen 1: Partner Discovery ── */
+  /* ── Screen 1: Partner Discovery (Onboarding) ── */
   .s1-hero {
     background: linear-gradient(160deg, #3D6B4F 0%, #2D5040 100%);
     padding: 28px 24px 36px;
@@ -200,6 +216,25 @@
 
   .s1-body { padding: 24px 20px; display: flex; flex-direction: column; gap: 14px; }
 
+  /* Onboarding step panels */
+  .onboard-step { display: none; flex-direction: column; gap: 14px; }
+  .onboard-step.active { display: flex; }
+
+  .onboard-question {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .onboard-subtitle {
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-bottom: 4px;
+    line-height: 1.5;
+  }
+
   .option-card {
     background: var(--white);
     border-radius: var(--radius-md);
@@ -210,35 +245,111 @@
     border: 2px solid transparent;
   }
   .option-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-  .option-card.selected { border-color: var(--green); }
+  .option-card.selected { border-color: var(--green); background: #F5FBF7; }
 
   .option-card-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 6px;
   }
   .option-icon {
-    width: 40px; height: 40px;
-    border-radius: 12px;
+    width: 44px; height: 44px;
+    border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    font-size: 22px;
     flex-shrink: 0;
   }
-  .option-icon.invite { background: #FEF3C7; }
-  .option-icon.match  { background: var(--green-pale); }
+  .option-icon.family  { background: #FEF9E7; }
+  .option-icon.friend  { background: #FEF3C7; }
+  .option-icon.match   { background: var(--green-pale); }
 
   .option-title {
     font-family: 'Fraunces', serif;
     font-size: 16px;
     font-weight: 600;
     color: var(--text-dark);
+    flex: 1;
   }
   .option-desc {
     font-size: 13px;
     color: var(--text-mid);
     line-height: 1.5;
-    padding-left: 52px;
+    margin-top: 6px;
+    padding-left: 56px;
+  }
+
+  .continue-btn-wrap {
+    display: none;
+  }
+  .continue-btn-wrap.visible { display: block; }
+
+  /* Step 2 family chips */
+  .chip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .chip-card {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 14px 12px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    border: 2px solid transparent;
+    text-align: center;
+    transition: all 0.18s;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    line-height: 1.4;
+  }
+  .chip-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .chip-card.selected { border-color: var(--green); background: #F5FBF7; }
+
+  /* Step 2 match animation */
+  .match-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 0 12px;
+  }
+  .match-dots {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .match-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--green-light);
+    animation: bounce-dot 1.2s ease-in-out infinite;
+  }
+  .match-dot:nth-child(2) { animation-delay: 0.2s; }
+  .match-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce-dot {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+  .match-loading-text {
+    font-size: 14px;
+    color: var(--text-mid);
+    font-weight: 500;
+  }
+
+  .match-result {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .match-result.visible { display: flex; }
+
+  .matched-badge {
+    background: var(--green-pale);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green);
+    text-align: center;
   }
 
   .divider-row {
@@ -339,6 +450,7 @@
     transition: all 0.18s;
     width: 100%;
     text-align: center;
+    text-decoration: none;
   }
   .btn-primary {
     background: var(--green);
@@ -364,6 +476,23 @@
     border: 2px solid var(--green-pale);
   }
   .btn-outline-green:hover { background: var(--green-pale); }
+
+  .btn-whatsapp {
+    background: #25D366;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .btn-whatsapp:hover { background: #1EB355; transform: translateY(-1px); }
+
+  .skip-link {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-soft);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .skip-link:hover { color: var(--text-mid); }
 
   /* ── Screen 2: Partnership Confirmed ── */
   .s2-celebration {
@@ -780,6 +909,31 @@
   .walk-btn-arrow {
     font-size: 20px;
     color: rgba(255,255,255,0.7);
+  }
+
+  /* Invite friend row on Dashboard */
+  .invite-friend-row {
+    background: var(--cream-2);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+  .invite-friend-row:hover { background: #E8DFD0; }
+  .invite-friend-icon { font-size: 20px; }
+  .invite-friend-text {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+  }
+  .invite-friend-cta {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
   }
 
   /* Milestone Progress */
@@ -1251,6 +1405,30 @@
     pointer-events: none;
   }
 
+  /* ── Dev mode nav ── */
+  .dev-back-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(28,25,23,0.75);
+    color: rgba(255,255,255,0.9);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    transition: background 0.18s;
+  }
+  .dev-back-btn:hover { background: rgba(28,25,23,0.9); }
+
   /* ── Responsive ── */
   @media (max-width: 420px) {
     .phone-frame { width: 100%; border-radius: 0; box-shadow: none; }
@@ -1258,6 +1436,9 @@
 </style>
 </head>
 <body>
+
+<!-- Back to All Experiments -->
+<a class="back-to-index" href="../index.html">← All experiments</a>
 
 <!-- Navigation -->
 <div class="nav-dots" id="navDots">
@@ -1283,7 +1464,7 @@
   </div>
 
   <!-- ═══════════════════════════════════════ -->
-  <!-- SCREEN 1: Partner Discovery            -->
+  <!-- SCREEN 1: Partner Onboarding           -->
   <!-- ═══════════════════════════════════════ -->
   <div class="screen active" id="screen-0">
     <!-- Hero -->
@@ -1297,60 +1478,115 @@
     </div>
 
     <div class="s1-body">
-      <!-- Option 1: Invite someone -->
-      <div class="option-card">
-        <div class="option-card-header">
-          <div class="option-icon invite">👋</div>
-          <div class="option-title">Invite someone you know</div>
+
+      <!-- ── Step 1: Who do you want to walk with? ── -->
+      <div class="onboard-step active" id="step1">
+        <div class="onboard-question">Who do you want to walk with?</div>
+
+        <!-- Family -->
+        <div class="option-card" id="opt-family" onclick="selectPartnerType('family')">
+          <div class="option-card-header">
+            <div class="option-icon family">👨‍👩‍👧</div>
+            <div class="option-title">Family member</div>
+          </div>
+          <div class="option-desc">Walk with someone at home</div>
         </div>
-        <div class="option-desc" style="margin-bottom:12px;">Share a link with a friend or family member — they join as your partner</div>
-        <div class="invite-input-row">
-          <input class="invite-input" type="text" placeholder="Search contacts or enter name…">
-          <button class="invite-icon-btn" onclick="goTo(1)">🔗</button>
+
+        <!-- Friend -->
+        <div class="option-card" id="opt-friend" onclick="selectPartnerType('friend')">
+          <div class="option-card-header">
+            <div class="option-icon friend">👫</div>
+            <div class="option-title">A friend</div>
+          </div>
+          <div class="option-desc">Walk with your bestie</div>
         </div>
-        <button class="btn btn-secondary" style="margin-top:10px;" onclick="goTo(1)">
-          Share invite link →
+
+        <!-- Match me -->
+        <div class="option-card" id="opt-match" onclick="selectPartnerType('match')">
+          <div class="option-card-header">
+            <div class="option-icon match">🌟</div>
+            <div class="option-title">Match me with someone</div>
+          </div>
+          <div class="option-desc">I'll find a partner in the community</div>
+        </div>
+
+        <!-- Continue button, shown after selection -->
+        <div class="continue-btn-wrap" id="step1Continue">
+          <button class="btn btn-primary" onclick="goToStep2()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- ── Step 2 (Family): Pick your walk partner ── -->
+      <div class="onboard-step" id="step2-family">
+        <div class="onboard-question">Pick your walk partner</div>
+        <div class="onboard-subtitle">Who at home walks with you?</div>
+
+        <div class="chip-grid">
+          <div class="chip-card" onclick="selectChip(this)">Mom &amp; me 👩‍👦</div>
+          <div class="chip-card" onclick="selectChip(this)">Walking with spouse 💑</div>
+          <div class="chip-card" onclick="selectChip(this)">Parent &amp; child 👨‍👦</div>
+          <div class="chip-card" onclick="selectChip(this)">Walking with sibling 👫</div>
+        </div>
+
+        <button class="btn btn-primary" onclick="goTo(1)">Continue →</button>
+        <div class="skip-link" onclick="goTo(1)">← Back</div>
+      </div>
+
+      <!-- ── Step 2 (Friend): Invite your friend ── -->
+      <div class="onboard-step" id="step2-friend">
+        <div class="onboard-question">Invite your friend</div>
+        <div class="onboard-subtitle">Send them a WhatsApp message — they'll join your walk partnership</div>
+
+        <button class="btn btn-whatsapp" onclick="inviteViaWhatsApp('friend')">
+          💬 Invite via WhatsApp
         </button>
+
+        <div class="skip-link" onclick="goTo(1)">Skip — I'll invite later</div>
       </div>
 
-      <div class="divider-row">
-        <div class="divider-line"></div>
-        <span>or</span>
-        <div class="divider-line"></div>
-      </div>
+      <!-- ── Step 2 (Match): Finding your walk partner ── -->
+      <div class="onboard-step" id="step2-match">
 
-      <!-- Option 2: Match -->
-      <div>
-        <div style="font-size:13px; font-weight:600; color:var(--text-mid); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
-          <span class="live-dot"><span class="live-dot-inner"></span></span>
-          Match me with a Habuild member
+        <!-- Loading state -->
+        <div class="match-loading" id="matchLoading">
+          <div class="match-dots">
+            <div class="match-dot"></div>
+            <div class="match-dot"></div>
+            <div class="match-dot"></div>
+          </div>
+          <div class="match-loading-text">Finding your walk partner...</div>
         </div>
 
-        <!-- Matched Member Card -->
-        <div class="matched-card">
-          <div class="matched-card-top">
-            <div class="avatar-lg avatar-meera">M</div>
-            <div class="matched-info">
-              <div class="matched-name">Meera S.</div>
-              <div class="matched-meta">Mumbai · Habuild member since 2023</div>
+        <!-- Result state -->
+        <div class="match-result" id="matchResult">
+          <div class="matched-badge">🎉 You've been matched!</div>
+
+          <div class="matched-card">
+            <div class="matched-card-top">
+              <div class="avatar-lg avatar-meera">P</div>
+              <div class="matched-info">
+                <div class="matched-name">Priya S.</div>
+                <div class="matched-meta">Mumbai · Habuild member since 2023</div>
+              </div>
+              <div style="font-size:20px; color:var(--text-soft);">✓</div>
             </div>
-            <div style="font-size:20px; color:var(--text-soft);">✓</div>
-          </div>
 
-          <div class="matched-pills">
-            <div class="pill">🌙 Walks after dinner</div>
-            <div class="pill green">Active 3 days ago</div>
-            <div class="pill clay">7-day streak</div>
-          </div>
+            <div class="matched-pills">
+              <div class="pill">🌙 Morning walks</div>
+              <div class="pill green">Active 2 days ago</div>
+              <div class="pill clay">5-day streak</div>
+            </div>
 
-          <div class="compatibility-row">
-            🌿 Both prefer evening walks · Similar schedule
-          </div>
+            <div class="compatibility-row">
+              🌿 Both prefer morning walks · Similar schedule
+            </div>
 
-          <button class="btn btn-primary" onclick="goTo(1)">
-            Send partner request to Meera →
-          </button>
+            <button class="btn btn-primary" onclick="goTo(1)">
+              Start walking together →
+            </button>
+          </div>
         </div>
+
       </div>
 
     </div>
@@ -1379,8 +1615,8 @@
         <div class="s2-avatar-meera">M</div>
       </div>
 
-      <div class="s2-title">You and <em>Meera</em><br>are Walk Partners! 🌿</div>
-      <div class="s2-subtitle">Your habit, each other's win</div>
+      <div class="s2-title">You and <em>your partner</em><br>are Walk Partners! 🌿</div>
+      <div class="s2-subtitle">Their habit, your win. Your habit, their win.</div>
     </div>
 
     <div class="s2-body">
@@ -1394,7 +1630,7 @@
         <div class="mechanic-row">
           <div class="avatar-sm avatar-meera" style="background:linear-gradient(135deg,#C4633A,#E8876A);">M</div>
           <div class="mechanic-text">
-            When <strong>Meera walks</strong> → <strong>you get a point</strong>
+            When <strong>your partner walks</strong> → <strong>you get a point</strong>
           </div>
           <div class="mechanic-point">+1 🎯</div>
         </div>
@@ -1402,7 +1638,7 @@
         <div class="mechanic-row">
           <div class="avatar-sm avatar-you" style="background:linear-gradient(135deg,#3D6B4F,#5A9070);">Y</div>
           <div class="mechanic-text">
-            When <strong>you walk</strong> → <strong>Meera gets a point</strong>
+            When <strong>you walk</strong> → <strong>they get a point</strong>
           </div>
           <div class="mechanic-point">+1 🎯</div>
         </div>
@@ -1465,34 +1701,34 @@
         </div>
 
         <div class="score-body">
-          <!-- Your Score (points Meera earned FOR you) -->
+          <!-- Your Score (points partner earned FOR you) -->
           <div class="score-side">
             <div class="score-avatar-wrap">
               <div class="avatar-sm" style="background:linear-gradient(135deg,#3D6B4F,#5A9070); width:28px; height:28px; font-size:11px; color:white; display:flex; align-items:center; justify-content:center; border-radius:50%; font-family:'Fraunces',serif; font-weight:600;">Y</div>
               <span class="score-player-name">Your score</span>
             </div>
             <div class="score-number green-score" id="yourScore">5</div>
-            <div class="score-sublabel">points Meera earned for you</div>
+            <div class="score-sublabel">points they earned for you</div>
           </div>
 
           <!-- Divider -->
           <div class="score-divider"></div>
 
-          <!-- Meera's Score (points you earned FOR her) -->
+          <!-- Partner's Score (points you earned FOR them) -->
           <div class="score-side">
             <div class="score-avatar-wrap">
               <div class="avatar-sm" style="background:linear-gradient(135deg,#C4633A,#E8876A); width:28px; height:28px; font-size:11px; color:white; display:flex; align-items:center; justify-content:center; border-radius:50%; font-family:'Fraunces',serif; font-weight:600;">M</div>
-              <span class="score-player-name">Meera's score</span>
+              <span class="score-player-name">Their score</span>
             </div>
             <div class="score-number clay-score" id="meeraScore">6</div>
-            <div class="score-sublabel">points you earned for her</div>
+            <div class="score-sublabel">points you earned for them</div>
           </div>
         </div>
 
         <div class="score-footer">
           <div class="score-footer-dot"></div>
           <div class="score-footer-text">
-            You walked <strong>6 days</strong> this week → <strong>Meera got 6 points</strong>
+            You walked <strong>6 days</strong> this week → <strong>they got 6 points</strong>
           </div>
         </div>
       </div>
@@ -1501,12 +1737,12 @@
       <div class="today-card">
         <div class="today-label">Today · Tuesday</div>
 
-        <!-- Meera walked ✓ -->
+        <!-- Partner walked ✓ -->
         <div class="today-meera-row" style="position:relative;" id="meeraStatusRow">
           <div class="today-status-icon">✓</div>
           <div class="today-status-text">
-            <strong>Meera walked today</strong><br>
-            <span style="font-size:12px; color:var(--text-soft);">She logged 20 mins around 7 PM</span>
+            <strong>Your partner walked today</strong><br>
+            <span style="font-size:12px; color:var(--text-soft);">They logged 20 mins around 7 PM</span>
           </div>
           <div class="today-point-badge">+1</div>
         </div>
@@ -1517,11 +1753,18 @@
             <div class="walk-btn-icon">🚶</div>
             <div class="walk-btn-text">
               <div class="walk-btn-title">I walked today</div>
-              <div class="walk-btn-sub">Meera gets +1 point 🎯</div>
+              <div class="walk-btn-sub">Your partner gets +1 point 🎯</div>
             </div>
           </div>
           <div class="walk-btn-arrow">→</div>
         </button>
+      </div>
+
+      <!-- Invite a friend CTA -->
+      <div class="invite-friend-row" onclick="inviteViaWhatsApp('dashboard')">
+        <div class="invite-friend-icon">💬</div>
+        <div class="invite-friend-text">Invite a friend to join</div>
+        <div class="invite-friend-cta">Share →</div>
       </div>
 
       <!-- Milestone Progress -->
@@ -1566,13 +1809,13 @@
         <div class="s4-notif-body">
           <div class="s4-notif-avatar">M</div>
           <div class="s4-notif-text">
-            <div class="s4-notif-title">🌿 Meera walked today!</div>
-            <div class="s4-notif-desc">She walked 15 mins after lunch. You got +1 point.</div>
+            <div class="s4-notif-title">🌿 Your partner walked today!</div>
+            <div class="s4-notif-desc">They walked 15 mins after lunch. You got +1 point.</div>
           </div>
         </div>
 
         <div class="s4-notif-action">
-          <span>Walk today so she gets her point too</span>
+          <span>Walk today so they get their point too</span>
           <span style="opacity:0.7;">→</span>
         </div>
       </div>
@@ -1615,7 +1858,7 @@
         </div>
       </div>
 
-      <div class="s5-title">You and <em>Meera</em><br>— 21 days together! 🌿</div>
+      <div class="s5-title">You and <em>your partner</em><br>— 21 days together! 🌿</div>
       <div class="s5-subtitle">You built a real habit. That's everything.</div>
     </div>
 
@@ -1645,7 +1888,7 @@
             <span class="share-connect" style="margin:0 6px; color:rgba(255,255,255,0.5);">🌿</span>
             <div class="avatar-sm" style="background:linear-gradient(135deg,#C4633A,#E8876A); color:white; font-family:'Fraunces',serif; font-weight:600; display:flex; align-items:center; justify-content:center; font-size:14px;">M</div>
           </div>
-          <div class="share-quote">"Meera and I built a 21-day walk habit together 🌿"</div>
+          <div class="share-quote">"We built a 21-day walk habit together 🌿"</div>
           <div class="share-hashtag">#HabuildWalkingClub · habuild.in</div>
         </div>
         <div class="share-card-footer">
@@ -1670,13 +1913,42 @@
 </div>
 <!-- End Phone Frame -->
 
+<!-- Dev mode nav: Back to Walk App -->
+<a class="dev-back-btn" href="walk-app.html">← Back to Walk App</a>
+
 <script>
+  // ── Analytics Logger ──
+  function logEvent(eventName, properties = {}) {
+    const userData = JSON.parse(localStorage.getItem('walk_experiment') || '{}');
+    const log = JSON.parse(localStorage.getItem('walk_analytics_log') || '[]');
+    const event = {
+      event: eventName,
+      timestamp: new Date().toISOString(),
+      userId: userData.userId || 'direct',
+      experimentId: userData.experimentId !== undefined ? userData.experimentId : 2,
+      experimentName: 'Walk Partners',
+      ...properties
+    };
+    log.push(event);
+    localStorage.setItem('walk_analytics_log', JSON.stringify(log));
+    console.log('[Walk Analytics]', eventName, properties);
+  }
+
+  // ── Screen labels ──
   const screenLabels = [
     "Screen 1 of 5 — Partner Discovery",
     "Screen 2 of 5 — Partnership Confirmed",
     "Screen 3 of 5 — Partner Dashboard",
     "Screen 4 of 5 — Partner Notification",
     "Screen 5 of 5 — Milestone Reached",
+  ];
+
+  const screenNames = [
+    'partner_discovery',
+    'partnership_confirmed',
+    'partner_dashboard',
+    'partner_notification',
+    'milestone_reached',
   ];
 
   let currentScreen = 0;
@@ -1697,9 +1969,71 @@
 
     // Reset scroll
     screens[currentScreen].scrollTop = 0;
+
+    // Fire screen view event
+    logEvent('experiment_screen_viewed', { screen: screenNames[currentScreen], experimentName: 'Walk Partners' });
   }
 
-  // Walk logging interaction on Screen 3
+  // ── Onboarding Step 1: partner type selection ──
+  let selectedPartnerType = null;
+
+  function selectPartnerType(type) {
+    selectedPartnerType = type;
+
+    // Clear all selections
+    ['opt-family', 'opt-friend', 'opt-match'].forEach(id => {
+      document.getElementById(id).classList.remove('selected');
+    });
+
+    // Highlight selected
+    document.getElementById('opt-' + type).classList.add('selected');
+
+    // Show continue button
+    document.getElementById('step1Continue').classList.add('visible');
+  }
+
+  function goToStep2() {
+    if (!selectedPartnerType) return;
+
+    // Hide step 1
+    document.getElementById('step1').classList.remove('active');
+
+    if (selectedPartnerType === 'family') {
+      document.getElementById('step2-family').classList.add('active');
+    } else if (selectedPartnerType === 'friend') {
+      document.getElementById('step2-friend').classList.add('active');
+    } else if (selectedPartnerType === 'match') {
+      document.getElementById('step2-match').classList.add('active');
+      startMatchAnimation();
+    }
+  }
+
+  function selectChip(el) {
+    document.querySelectorAll('.chip-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function startMatchAnimation() {
+    const loading = document.getElementById('matchLoading');
+    const result = document.getElementById('matchResult');
+
+    loading.style.display = 'flex';
+    result.classList.remove('visible');
+
+    setTimeout(() => {
+      loading.style.display = 'none';
+      result.classList.add('visible');
+    }, 1500);
+  }
+
+  // ── WhatsApp invite ──
+  function inviteViaWhatsApp(source) {
+    const text = 'Hey! Join me on Habuild Walk — we can be walk partners and keep each other accountable 🚶 https://habuild.in/walk';
+    window.open('https://wa.me/?text=' + encodeURIComponent(text));
+    logEvent('partner_invited', { method: 'whatsapp', partnerType: source === 'dashboard' ? 'friend' : selectedPartnerType });
+  }
+
+  // ── Walk logging interaction on Screen 3 ──
   function logWalk() {
     const btn = document.querySelector('.walk-btn');
     const meeraScore = document.getElementById('meeraScore');
@@ -1711,7 +2045,7 @@
     // Show +1 point pop
     const pop = document.createElement('div');
     pop.className = 'point-pop';
-    pop.textContent = '+1 for Meera!';
+    pop.textContent = '+1 for them!';
     pop.style.cssText = `
       position: fixed;
       font-family: 'Fraunces', serif;
@@ -1745,7 +2079,7 @@
           <div class="walk-btn-icon">✓</div>
           <div class="walk-btn-text">
             <div class="walk-btn-title">Walked today!</div>
-            <div class="walk-btn-sub">Meera got +1 point 🎉</div>
+            <div class="walk-btn-sub">Your partner got +1 point 🎉</div>
           </div>
         </div>
         <div class="walk-btn-arrow" style="font-size:16px;color:rgba(255,255,255,0.9);">✓</div>
@@ -1759,11 +2093,14 @@
     }, 2000);
   }
 
-  // Keyboard nav
+  // ── Keyboard nav ──
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' && currentScreen < 4) goTo(currentScreen + 1);
     if (e.key === 'ArrowLeft' && currentScreen > 0) goTo(currentScreen - 1);
   });
+
+  // ── Fire initial page load event ──
+  logEvent('experiment_screen_viewed', { screen: 'partner_discovery', experimentName: 'Walk Partners' });
 </script>
 </body>
 </html>
